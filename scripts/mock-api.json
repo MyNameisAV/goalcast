@@ -1,0 +1,16 @@
+{
+  "matches": [
+    {
+      "status": "FINISHED", "stage": "QUARTER_FINALS", "utcDate": "2026-07-10T19:00:00Z",
+      "homeTeam": { "tla": "ESP" }, "awayTeam": { "tla": "BEL" },
+      "score": { "winner": "HOME_TEAM", "duration": "PENALTY_SHOOTOUT",
+                 "fullTime": { "home": 1, "away": 1 }, "regularTime": { "home": 1, "away": 1 } }
+    },
+    {
+      "status": "FINISHED", "stage": "QUARTER_FINALS", "utcDate": "2026-07-11T21:00:00Z",
+      "homeTeam": { "tla": "ENG" }, "awayTeam": { "tla": "NOR" },
+      "score": { "winner": "HOME_TEAM", "duration": "REGULAR",
+                 "fullTime": { "home": 2, "away": 1 } }
+    }
+  ]
+}

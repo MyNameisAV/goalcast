@@ -1,0 +1,236 @@
+{
+  "meta": {
+    "tournament": "World Cup 2026 — knockout stage",
+    "updated": "2026-07-12",
+    "eloSource": "eloratings.net (via footballratings.org), 9 Jul 2026",
+    "howToUpdate": "After each match: (1) fill result on the fixture, (2) optionally refresh team elo values from eloratings.net. Everything recomputes from this file.",
+    "submissionDeadlineIST": "2026-07-14 17:00",
+    "model": {
+      "name": "GoalCast Elo-Poisson-MonteCarlo",
+      "version": "1.1.0"
+    }
+  },
+  "config": {
+    "baseGoalsPerTeam": 1.3,
+    "eloGoalScale": 1000,
+    "pensEloScale": 800,
+    "maxGoals": 8,
+    "simRuns": 20000,
+    "seed": 20260709
+  },
+  "teams": {
+    "FRA": {
+      "name": "France",
+      "flag": "🇫🇷",
+      "elo": 2143,
+      "code": "FRA",
+      "color": "#21489B",
+      "textColor": "#F2F5EF"
+    },
+    "MAR": {
+      "name": "Morocco",
+      "flag": "🇲🇦",
+      "elo": 1921,
+      "code": "MAR",
+      "color": "#A6242F",
+      "textColor": "#F2F5EF"
+    },
+    "ESP": {
+      "name": "Spain",
+      "flag": "🇪🇸",
+      "elo": 2177,
+      "code": "ESP",
+      "color": "#C8102E",
+      "textColor": "#FFD65C"
+    },
+    "BEL": {
+      "name": "Belgium",
+      "flag": "🇧🇪",
+      "elo": 1961,
+      "code": "BEL",
+      "color": "#2D2A26",
+      "textColor": "#F5C400"
+    },
+    "NOR": {
+      "name": "Norway",
+      "flag": "🇳🇴",
+      "elo": 1972,
+      "code": "NOR",
+      "color": "#8C1D33",
+      "textColor": "#F2F5EF"
+    },
+    "ENG": {
+      "name": "England",
+      "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "elo": 2076,
+      "code": "ENG",
+      "color": "#F2F5EF",
+      "textColor": "#C8102E"
+    },
+    "ARG": {
+      "name": "Argentina",
+      "flag": "🇦🇷",
+      "elo": 2156,
+      "code": "ARG",
+      "color": "#7EB6E3",
+      "textColor": "#10233F"
+    },
+    "SUI": {
+      "name": "Switzerland",
+      "flag": "🇨🇭",
+      "elo": 1949,
+      "code": "SUI",
+      "color": "#E03A2F",
+      "textColor": "#F2F5EF"
+    }
+  },
+  "fixtures": [
+    {
+      "id": "QF1",
+      "round": "QF",
+      "home": "FRA",
+      "away": "MAR",
+      "kickoffIST": "2026-07-10 01:30",
+      "result": {
+        "homeGoals": 2,
+        "awayGoals": 0
+      }
+    },
+    {
+      "id": "QF2",
+      "round": "QF",
+      "home": "ESP",
+      "away": "BEL",
+      "kickoffIST": "2026-07-11 00:30",
+      "result": {
+        "homeGoals": 2,
+        "awayGoals": 1
+      }
+    },
+    {
+      "id": "QF3",
+      "round": "QF",
+      "home": "NOR",
+      "away": "ENG",
+      "kickoffIST": "2026-07-12 02:30",
+      "result": {
+        "homeGoals": 1,
+        "awayGoals": 2
+      }
+    },
+    {
+      "id": "QF4",
+      "round": "QF",
+      "home": "ARG",
+      "away": "SUI",
+      "kickoffIST": "2026-07-12 06:30",
+      "result": {
+        "homeGoals": 3,
+        "awayGoals": 1
+      }
+    },
+    {
+      "id": "SF1",
+      "round": "SF",
+      "homeFrom": "QF1",
+      "awayFrom": "QF2",
+      "kickoffIST": "2026-07-15 00:30",
+      "result": null
+    },
+    {
+      "id": "SF2",
+      "round": "SF",
+      "homeFrom": "QF3",
+      "awayFrom": "QF4",
+      "kickoffIST": "2026-07-16 00:30",
+      "result": null
+    },
+    {
+      "id": "FINAL",
+      "round": "F",
+      "homeFrom": "SF1",
+      "awayFrom": "SF2",
+      "kickoffIST": "2026-07-20 00:30",
+      "result": null
+    }
+  ],
+  "resultFormatExample": {
+    "homeGoals": 1,
+    "awayGoals": 1,
+    "winner": "SUI",
+    "note": "winner only required when goals are level (ET/pens)"
+  },
+  "benchmarks": {
+    "note": "Human benchmark picks entered verbatim from shared SuperBru predictions. Engine picks are frozen pre-kickoff and committed to the repository; provisional projections are labelled live.",
+    "players": [
+      {
+        "id": "engine",
+        "name": "GoalCast Engine",
+        "kind": "ai"
+      },
+      {
+        "id": "ni1",
+        "name": "SuperBru Challenger (NI)",
+        "kind": "human"
+      }
+    ],
+    "picks": {
+      "engine": {
+        "QF1": {
+          "winner": "FRA",
+          "h": 2,
+          "a": 0,
+          "lockedAt": "2026-07-09"
+        },
+        "QF2": {
+          "winner": "ESP",
+          "h": 2,
+          "a": 0,
+          "lockedAt": "2026-07-10"
+        },
+        "QF3": {
+          "winner": "ENG",
+          "h": 0,
+          "a": 1,
+          "lockedAt": "2026-07-10"
+        },
+        "QF4": {
+          "winner": "ARG",
+          "h": 2,
+          "a": 0,
+          "lockedAt": "2026-07-10"
+        },
+        "SF1": {
+          "winner": "ESP",
+          "h": 0,
+          "a": 1,
+          "lockedAt": "2026-07-12"
+        },
+        "SF2": {
+          "winner": "ARG",
+          "h": 0,
+          "a": 1,
+          "lockedAt": "2026-07-12"
+        }
+      },
+      "ni1": {
+        "QF1": {
+          "winner": "FRA",
+          "h": 2,
+          "a": 1
+        },
+        "QF2": {
+          "winner": "ESP"
+        },
+        "QF3": {
+          "winner": "NOR"
+        },
+        "QF4": {
+          "winner": "ARG",
+          "h": 2,
+          "a": 1
+        }
+      }
+    }
+  }
+}

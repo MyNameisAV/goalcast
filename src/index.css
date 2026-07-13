@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pitch-950: #0a2a19;
+  --color-pitch-900: #0b2e1c;
+  --color-pitch-700: #14502f;
+  --color-pitch-500: #1e6b3f;
+  --color-chalk: #f2f5ef;
+  --color-gold: #e8b84b;
+  --color-kitred: #e4572e;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Archivo", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+body {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-pitch-900) 0 84px,
+    var(--color-pitch-950) 84px 168px
+  );
+  color: var(--color-chalk);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* ---------- signature: pitch probability bar ---------- */
+/* A strip of pitch. The chalk line is the halfway mark = 50%. */
+.pitchbar {
+  position: relative;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--color-pitch-700);
+  overflow: hidden;
+  border: 1px solid rgba(242, 245, 239, 0.18);
+}
+.pitchbar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #f7d98a, var(--color-gold));
+  transition: width 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pitchbar-fill--red {
+  background: linear-gradient(180deg, #f08a68, var(--color-kitred));
+}
+.pitchbar::after {
+  /* the halfway chalk line */
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 2px;
+  background: var(--color-chalk);
+  opacity: 0.9;
+}
+.pitchbar--nohalf::after {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pitchbar-fill {
+    transition: none;
+  }
+}
+
+/* ---------- scorebug plates (broadcast lower-third language) ---------- */
+.plate {
+  display: inline-block;
+  transform: skew(-6deg);
+  background: var(--color-chalk);
+  color: var(--color-pitch-950);
+  font-family: var(--font-data);
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 2px;
+}
+.plate > span {
+  display: inline-block;
+  transform: skew(6deg);
+}
+.plate--gold {
+  background: var(--color-gold);
+}
+.plate--outline {
+  background: transparent;
+  color: var(--color-chalk);
+  border: 1px solid rgba(242, 245, 239, 0.45);
+}
+
+.tabbtn {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1px solid rgba(242, 245, 239, 0.3);
+  border-radius: 3px;
+  transform: skew(-6deg);
+}
+.tabbtn > span {
+  display: inline-block;
+  transform: skew(6deg);
+}
+.tabbtn[aria-selected="true"] {
+  background: var(--color-chalk);
+  color: var(--color-pitch-950);
+  border-color: var(--color-chalk);
+}
+
+.card {
+  background: color-mix(in srgb, var(--color-pitch-950) 82%, black 18%);
+  border: 1px solid rgba(242, 245, 239, 0.14);
+  border-radius: 6px;
+}
+
+.pickbtn {
+  border: 1px solid rgba(242, 245, 239, 0.35);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-weight: 600;
+}
+.pickbtn[aria-pressed="true"] {
+  background: var(--color-gold);
+  color: var(--color-pitch-950);
+  border-color: var(--color-gold);
+}
+
+select,
+input {
+  background: var(--color-pitch-950);
+  border: 1px solid rgba(242, 245, 239, 0.35);
+  border-radius: 4px;
+  color: var(--color-chalk);
+  font-family: var(--font-data);
+  padding: 4px 8px;
+}
+
+/* ---------- team marks (kit-colored TLA plates) ---------- */
+.teammark {
+  display: inline-block;
+  transform: skew(-6deg);
+  font-family: var(--font-data);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 1px 7px;
+  border-radius: 2px;
+  border: 1px solid rgba(242, 245, 239, 0.28);
+}
+.teammark > span {
+  display: inline-block;
+  transform: skew(6deg);
+}
+.teammark--md {
+  font-size: 13px;
+  padding: 2px 9px;
+}
