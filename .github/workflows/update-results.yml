@@ -23,7 +23,8 @@ jobs:
         env:
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
         run: |
-          node scripts/update-results.mjs | tee out.log
+          set -o pipefail
+          node scripts/update-results.mjs 2>&1 | tee out.log
           echo "changed=$(grep -c '^CHANGED$' out.log || true)" >> "$GITHUB_OUTPUT"
       - name: Validate engine still runs on new data
         if: steps.fetch.outputs.changed == '1'
