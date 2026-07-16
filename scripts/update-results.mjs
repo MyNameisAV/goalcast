@@ -11,7 +11,40 @@
 // workflow uses that to decide whether to commit.
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { modelPick, resolveBracket } from "../src/logic.js";
+import { analyzeMatch, effElo } from "../src/engine.js";
+
+// Self-contained helpers — avoids importing logic.js which has a
+// circular dependency with projection.js that can crash in CI.
+function resolveBracketLight(data) {
+  const winners = {};
+  const out = [];
+  for (const f of data.fixtures) {
+    const homeId = f.home ?? winners[f.homeFrom] ?? null;
+    const awayId = f.away ?? winners[f.awayFrom] ?? null;
+    const known = Boolean(homeId && awayId);
+    if (f.result && known) {
+      const { homeGoals, awayGoals, winner } = f.result;
+      winners[f.id] =
+        winner ?? (homeGoals > awayGoals ? homeId : awayGoals > homeGoals ? awayId : null);
+    }
+    const analysis =
+      known && !f.result
+        ? analyzeMatch(effElo(data.teams[homeId]), effElo(data.teams[awayId]), data.config)
+        : null;
+    out.push({ ...f, homeId, awayId, known, analysis, result: f.result ?? null });
+  }
+  return out;
+}
+
+function modelPickLight(fx) {
+  if (!fx.known || !fx.analysis) return null;
+  const homeWins = fx.analysis.advanceHome >= fx.analysis.advanceAway;
+  const winner = homeWins ? fx.homeId : fx.awayId;
+  const score =
+    fx.analysis.topScores.find((s) => (homeWins ? s.h > s.a : s.a > s.h)) ??
+    fx.analysis.topScores[0];
+  return { winner, h: score.h, a: score.a };
+}
 
 const DATA_PATH = new URL("../src/data.json", import.meta.url);
 const API_URL =
@@ -126,9 +159,9 @@ function main(apiMatches, data) {
   }
 
   // Lock the engine's pick for every known, unplayed fixture that lacks one.
-  for (const fx of resolveBracket(data)) {
+  for (const fx of resolveBracketLight(data)) {
     if (fx.known && !fx.result && !data.benchmarks.picks.engine[fx.id]) {
-      const m = modelPick(fx);
+      const m = modelPickLight(fx);
       if (m) {
         data.benchmarks.picks.engine[fx.id] = {
           winner: m.winner, h: m.h, a: m.a,
