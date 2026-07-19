@@ -1,7 +1,7 @@
 {
   "meta": {
     "tournament": "World Cup 2026 — knockout stage",
-    "updated": "2026-07-15",
+    "updated": "2026-07-19",
     "eloSource": "eloratings.net (via footballratings.org), 9 Jul 2026",
     "howToUpdate": "After each match: (1) fill result on the fixture, (2) optionally refresh team elo values from eloratings.net. Everything recomputes from this file.",
     "submissionDeadlineIST": "2026-07-14 17:00",
@@ -157,7 +157,11 @@
       "homeFrom": "SF1",
       "awayFrom": "SF2",
       "kickoffIST": "2026-07-20 00:30",
-      "result": null
+      "result": {
+        "homeGoals": 0,
+        "awayGoals": 0,
+        "winner": "ESP"
+      }
     }
   ],
   "resultFormatExample": {
