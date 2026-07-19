@@ -1,7 +1,7 @@
 {
   "meta": {
     "tournament": "World Cup 2026 — knockout stage",
-    "updated": "2026-07-15",
+    "updated": "2026-07-19",
     "eloSource": "eloratings.net (via footballratings.org), 9 Jul 2026",
     "howToUpdate": "After each match: (1) fill result on the fixture, (2) optionally refresh team elo values from eloratings.net. Everything recomputes from this file.",
     "submissionDeadlineIST": "2026-07-14 17:00",
@@ -149,6 +149,17 @@
       "result": {
         "homeGoals": 1,
         "awayGoals": 2
+      }
+    },
+    {
+      "id": "BRONZE",
+      "round": "TP",
+      "home": "ENG",
+      "away": "FRA",
+      "kickoffIST": "2026-07-19 05:30",
+      "result": {
+        "homeGoals": 6,
+        "awayGoals": 4
       }
     },
     {

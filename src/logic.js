@@ -62,7 +62,7 @@ export function modelPick(fx) {
 }
 
 export function roundLabel(round) {
-  return { QF: "Quarterfinal", SF: "Semifinal", F: "Final" }[round] ?? round;
+  return { QF: "Quarterfinal", SF: "Semifinal", TP: "Bronze Final", F: "Final" }[round] ?? round;
 }
 
 /**
