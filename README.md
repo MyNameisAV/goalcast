@@ -25,6 +25,17 @@ Optionally refresh `elo` values from eloratings.net. Everything —
 bracket, simulation, Beat-the-AI scoring — recomputes on reload.
 Recorded results are locked in; only unplayed matches are simulated.
 
+Most fixtures derive their participants from the **winners** of earlier
+fixtures via `homeFrom`/`awayFrom`. A third-place playoff instead needs
+the **losers** — use `homeFromLoser`/`awayFromLoser` (fixture id) the
+same way, e.g. a Bronze Final between the two semifinal losers:
+```json
+{ "id": "BRONZE", "round": "TP", "homeFromLoser": "SF1", "awayFromLoser": "SF2",
+  "kickoffIST": "2026-07-18 20:00", "result": null }
+```
+It resolves automatically once both feeder results land — same rules,
+scheduled CI, and Beat-the-AI flow as any other fixture.
+
 ## Data & privacy
 Draft picks live in the visitor's browser. Joining the leaderboard
 stores nickname + picks in Netlify Blobs (removable via the app). No
