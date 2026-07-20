@@ -152,6 +152,17 @@
       }
     },
     {
+      "id": "BRONZE",
+      "round": "TP",
+      "home": "ENG",
+      "away": "FRA",
+      "kickoffIST": "2026-07-19 05:30",
+      "result": {
+        "homeGoals": 6,
+        "awayGoals": 4
+      }
+    },
+    {
       "id": "FINAL",
       "round": "F",
       "homeFrom": "SF1",

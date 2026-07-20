@@ -17,15 +17,18 @@ import { analyzeMatch, effElo } from "../src/engine.js";
 // circular dependency with projection.js that can crash in CI.
 function resolveBracketLight(data) {
   const winners = {};
+  const losers = {};
   const out = [];
   for (const f of data.fixtures) {
-    const homeId = f.home ?? winners[f.homeFrom] ?? null;
-    const awayId = f.away ?? winners[f.awayFrom] ?? null;
+    const homeId = f.home ?? winners[f.homeFrom] ?? losers[f.homeFromLoser] ?? null;
+    const awayId = f.away ?? winners[f.awayFrom] ?? losers[f.awayFromLoser] ?? null;
     const known = Boolean(homeId && awayId);
     if (f.result && known) {
       const { homeGoals, awayGoals, winner } = f.result;
-      winners[f.id] =
+      const w =
         winner ?? (homeGoals > awayGoals ? homeId : awayGoals > homeGoals ? awayId : null);
+      winners[f.id] = w;
+      losers[f.id] = w === homeId ? awayId : homeId;
     }
     const analysis =
       known && !f.result
@@ -48,7 +51,7 @@ function modelPickLight(fx) {
 
 const DATA_PATH = new URL("../src/data.json", import.meta.url);
 const API_URL =
-  "https://api.football-data.org/v4/competitions/WC/matches?stage=QUARTER_FINALS,SEMI_FINALS,FINAL";
+  "https://api.football-data.org/v4/competitions/WC/matches?stage=QUARTER_FINALS,SEMI_FINALS,THIRD_PLACE,FINAL";
 
 const mockIdx = process.argv.indexOf("--mock");
 const MOCK_PATH = mockIdx > -1 ? process.argv[mockIdx + 1] : null;
@@ -93,21 +96,26 @@ function main(apiMatches, data) {
     .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
 
   // Resolve current bracket participants from already-recorded results,
-  // mirroring src/logic.js, so SF/FINAL fixtures can be matched by teams.
+  // mirroring src/logic.js, so SF/FINAL/third-place fixtures can be
+  // matched by teams. Losers feed "homeFromLoser"/"awayFromLoser" slots
+  // (e.g. a third-place playoff between the semifinal losers).
   const winners = {};
+  const losers = {};
   const participants = {};
   for (const f of data.fixtures) {
-    const home = f.home ?? winners[f.homeFrom] ?? null;
-    const away = f.away ?? winners[f.awayFrom] ?? null;
+    const home = f.home ?? winners[f.homeFrom] ?? losers[f.homeFromLoser] ?? null;
+    const away = f.away ?? winners[f.awayFrom] ?? losers[f.awayFromLoser] ?? null;
     participants[f.id] = { home, away };
     if (f.result && home && away) {
       const { homeGoals, awayGoals, winner } = f.result;
-      winners[f.id] =
+      const w =
         winner ?? (homeGoals > awayGoals ? home : awayGoals > homeGoals ? away : null);
+      winners[f.id] = w;
+      losers[f.id] = w === home ? away : home;
     }
   }
 
-  const stageOf = { QF: "QUARTER_FINALS", SF: "SEMI_FINALS", F: "FINAL" };
+  const stageOf = { QF: "QUARTER_FINALS", SF: "SEMI_FINALS", TP: "THIRD_PLACE", F: "FINAL" };
   let changed = false;
 
   // Freeze the engine's pick for any known, unplayed fixture that doesn't
@@ -140,15 +148,15 @@ function main(apiMatches, data) {
       result.winner = apiWinnerTla;
     }
     fx.result = result;
-    // Also record the winner for downstream participant resolution this run.
-    winners[fx.id] =
-      result.winner ??
-      (result.homeGoals > result.awayGoals ? home : away);
+    // Also record the winner/loser for downstream participant resolution this run.
+    const w = result.winner ?? (result.homeGoals > result.awayGoals ? home : away);
+    winners[fx.id] = w;
+    losers[fx.id] = w === home ? away : home;
     // Refresh participants for later fixtures in this same pass.
     for (const later of data.fixtures) {
       participants[later.id] = {
-        home: later.home ?? winners[later.homeFrom] ?? null,
-        away: later.away ?? winners[later.awayFrom] ?? null,
+        home: later.home ?? winners[later.homeFrom] ?? losers[later.homeFromLoser] ?? null,
+        away: later.away ?? winners[later.awayFrom] ?? losers[later.awayFromLoser] ?? null,
       };
     }
     changed = true;

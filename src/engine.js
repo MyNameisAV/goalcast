@@ -142,11 +142,13 @@ export function simulateTournament(data, runs = data.config.simRuns, seed = data
 
   for (let r = 0; r < runs; r++) {
     const winners = {};
+    const losers = {};
     for (const f of data.fixtures) {
-      const home = f.home ?? winners[f.homeFrom];
-      const away = f.away ?? winners[f.awayFrom];
+      const home = f.home ?? winners[f.homeFrom] ?? losers[f.homeFromLoser];
+      const away = f.away ?? winners[f.awayFrom] ?? losers[f.awayFromLoser];
       const res = playFixture(home, away, teams, cfg, rng, f.result);
       winners[f.id] = res.winner;
+      losers[f.id] = res.winner === home ? away : home;
 
       if (f.id === "FINAL") {
         tally[home].reachFinal++;

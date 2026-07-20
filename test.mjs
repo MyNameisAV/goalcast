@@ -84,6 +84,30 @@ assert(scorePicks(
 
 assert(effectiveLock(data, "SF1", {}) === parseKickoffIST("2026-07-15 00:30"), "real matchup locks at own kickoff");
 
+// Third-place-style playoff: participants come from the LOSERS of two
+// earlier fixtures via "homeFromLoser"/"awayFromLoser", not winners.
+const loserProbe = {
+  ...data,
+  fixtures: [
+    { id: "X1", round: "SF", home: "FRA", away: "ESP", kickoffIST: "2026-07-15 00:30", result: { homeGoals: 0, awayGoals: 2 } },
+    { id: "X2", round: "SF", home: "ENG", away: "ARG", kickoffIST: "2026-07-16 00:30", result: { homeGoals: 1, awayGoals: 2 } },
+    { id: "X3", round: "TP", homeFromLoser: "X1", awayFromLoser: "X2", kickoffIST: "2026-07-18 20:00", result: null },
+  ],
+};
+const x3resolved = resolveBracket(loserProbe).find((f) => f.id === "X3");
+assert(x3resolved.known && x3resolved.homeId === "FRA" && x3resolved.awayId === "ENG", "loser-derived fixture resolves once both feeders finish");
+const x3parts = projectParticipants(loserProbe, {}).X3;
+assert(x3parts.real && x3parts.homeId === "FRA" && x3parts.awayId === "ENG", "projection also resolves loser-derived fixture");
+assert(effectiveLock(loserProbe, "X3", {}) === parseKickoffIST("2026-07-18 20:00"), "loser-derived fixture locks at its own kickoff once real");
+
+const loserProbeEarly = { ...loserProbe, fixtures: loserProbe.fixtures.map((f) => (f.id === "X2" ? { ...f, result: null } : f)) };
+const x3early = resolveBracket(loserProbeEarly).find((f) => f.id === "X3");
+assert(!x3early.known, "loser-derived fixture stays unknown until both feeders are done");
+assert(
+  effectiveLock(loserProbeEarly, "X3", {}) === Math.min(parseKickoffIST("2026-07-15 00:30"), parseKickoffIST("2026-07-16 00:30")),
+  "unresolved loser-derived fixture locks at earliest feeder kickoff"
+);
+
 if (baseline) {
   console.log("\n--- baseline-state checks (QF1+QF2 only) ---");
   assert(known.length === 5, "exactly SF1 resolved");

@@ -12,11 +12,12 @@ import { parseKickoffIST } from "./logic.js";
  */
 export function projectParticipants(data, picks = {}) {
   const winners = {}; // real winners from results
+  const losers = {}; // real losers from results (for "homeFromLoser" slots)
   const projected = {}; // winner per fixture: real result ?? pick
   const out = {};
   for (const f of data.fixtures) {
-    const homeReal = f.home ?? winners[f.homeFrom] ?? null;
-    const awayReal = f.away ?? winners[f.awayFrom] ?? null;
+    const homeReal = f.home ?? winners[f.homeFrom] ?? losers[f.homeFromLoser] ?? null;
+    const awayReal = f.away ?? winners[f.awayFrom] ?? losers[f.awayFromLoser] ?? null;
     let homeId = homeReal ?? projected[f.homeFrom] ?? null;
     let awayId = awayReal ?? projected[f.awayFrom] ?? null;
     // A stored projected pick is self-describing: its pair was validated
@@ -32,6 +33,7 @@ export function projectParticipants(data, picks = {}) {
       const w =
         winner ?? (homeGoals > awayGoals ? homeReal : awayGoals > homeGoals ? awayReal : null);
       winners[f.id] = w;
+      losers[f.id] = w === homeReal ? awayReal : homeReal;
       projected[f.id] = w;
     } else {
       const p = picks[f.id];
@@ -53,7 +55,7 @@ export function effectiveLock(data, fixtureId, picks = {}) {
   if (!fx) return 0;
   const parts = projectParticipants(data, picks)[fixtureId];
   if (parts.real) return parseKickoffIST(fx.kickoffIST);
-  const deps = [fx.homeFrom, fx.awayFrom]
+  const deps = [fx.homeFrom, fx.awayFrom, fx.homeFromLoser, fx.awayFromLoser]
     .map((id) => data.fixtures.find((f) => f.id === id))
     .filter(Boolean)
     .map((f) => parseKickoffIST(f.kickoffIST));

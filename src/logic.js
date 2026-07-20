@@ -16,21 +16,25 @@ export const pct = (x) => `${(100 * x).toFixed(1)}%`;
 
 /**
  * Walk the fixture list, propagate winners of recorded results into
- * later rounds, and attach a full model analysis wherever both
- * participants are known.
+ * later rounds (and losers into "homeFromLoser"/"awayFromLoser" slots —
+ * e.g. a third-place playoff), and attach a full model analysis wherever
+ * both participants are known.
  */
 export function resolveBracket(data) {
   const winners = {};
+  const losers = {};
   const out = [];
   for (const f of data.fixtures) {
-    const homeId = f.home ?? winners[f.homeFrom] ?? null;
-    const awayId = f.away ?? winners[f.awayFrom] ?? null;
+    const homeId = f.home ?? winners[f.homeFrom] ?? losers[f.homeFromLoser] ?? null;
+    const awayId = f.away ?? winners[f.awayFrom] ?? losers[f.awayFromLoser] ?? null;
     const known = Boolean(homeId && awayId);
 
     if (f.result && known) {
       const { homeGoals, awayGoals, winner } = f.result;
-      winners[f.id] =
+      const w =
         winner ?? (homeGoals > awayGoals ? homeId : awayGoals > homeGoals ? awayId : null);
+      winners[f.id] = w;
+      losers[f.id] = w === homeId ? awayId : homeId;
     }
 
     out.push({
@@ -62,7 +66,7 @@ export function modelPick(fx) {
 }
 
 export function roundLabel(round) {
-  return { QF: "Quarterfinal", SF: "Semifinal", F: "Final" }[round] ?? round;
+  return { QF: "Quarterfinal", SF: "Semifinal", TP: "Bronze Final", F: "Final" }[round] ?? round;
 }
 
 /**
