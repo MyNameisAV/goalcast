@@ -174,7 +174,12 @@ export default function Leaderboard({ data, resolved }) {
                   <span>
                     FT {fx.result.homeGoals}-{fx.result.awayGoals}
                     {fx.result.winner && fx.result.homeGoals === fx.result.awayGoals
-                      ? ` · ${data.teams[fx.result.winner].name} on pens`
+                      ? ` · ${data.teams[fx.result.winner].name} ` +
+                        (fx.result.pens
+                          ? `${fx.result.pens.home}-${fx.result.pens.away} pens`
+                          : fx.result.aet
+                            ? `${fx.result.aet.home}-${fx.result.aet.away} AET`
+                            : "on pens")
                       : ""}
                   </span>
                 </span>

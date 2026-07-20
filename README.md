@@ -17,10 +17,14 @@ Edit `src/data.json`, set the fixture's result:
 ```json
 "result": { "homeGoals": 2, "awayGoals": 0 }
 ```
-If level after 90' (ET/pens), name the winner:
+If level after 90', name the winner — and add whichever of these
+actually decided it, so the card shows the real score instead of just
+"(after ET/pens)":
 ```json
-"result": { "homeGoals": 1, "awayGoals": 1, "winner": "SUI" }
+"result": { "homeGoals": 1, "awayGoals": 1, "winner": "SUI", "aet": { "home": 2, "away": 1 } }
+"result": { "homeGoals": 1, "awayGoals": 1, "winner": "SUI", "pens": { "home": 4, "away": 2 } }
 ```
+(`aet` = won by a goal in extra time; `pens` = won on the shootout — use one, not both.)
 Optionally refresh `elo` values from eloratings.net. Everything —
 bracket, simulation, Beat-the-AI scoring — recomputes on reload.
 Recorded results are locked in; only unplayed matches are simulated.
