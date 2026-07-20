@@ -171,7 +171,8 @@
       "result": {
         "homeGoals": 0,
         "awayGoals": 0,
-        "winner": "ESP"
+        "winner": "ESP",
+        "aet": { "home": 1, "away": 0 }
       }
     }
   ],
@@ -179,7 +180,9 @@
     "homeGoals": 1,
     "awayGoals": 1,
     "winner": "SUI",
-    "note": "winner only required when goals are level (ET/pens)"
+    "aet": { "home": 2, "away": 1 },
+    "pens": { "home": 4, "away": 2 },
+    "note": "homeGoals/awayGoals is the 90' score; winner required when level; add aet (goal in extra time) or pens (shootout) — not both — to show the actual decider"
   },
   "benchmarks": {
     "note": "Human benchmark picks entered verbatim from shared SuperBru predictions. Engine picks are frozen pre-kickoff and committed to the repository; provisional projections are labelled live.",

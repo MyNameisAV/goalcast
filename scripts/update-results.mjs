@@ -146,6 +146,18 @@ function main(apiMatches, data) {
       const apiWinnerTla =
         match.score.winner === "HOME_TEAM" ? match.homeTeam.tla : match.awayTeam.tla;
       result.winner = apiWinnerTla;
+      if (match.score.penalties?.home != null) {
+        result.pens = {
+          home: flip ? match.score.penalties.away : match.score.penalties.home,
+          away: flip ? match.score.penalties.home : match.score.penalties.away,
+        };
+      } else if (match.score.fullTime?.home != null) {
+        // Decided by a goal in extra time (no shootout) — record the actual final score.
+        result.aet = {
+          home: flip ? match.score.fullTime.away : match.score.fullTime.home,
+          away: flip ? match.score.fullTime.home : match.score.fullTime.away,
+        };
+      }
     }
     fx.result = result;
     // Also record the winner/loser for downstream participant resolution this run.

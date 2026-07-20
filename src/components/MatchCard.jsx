@@ -25,6 +25,15 @@ function TeamRow({ team, goals, dim }) {
 export default function MatchCard({ fx, teams }) {
   const H = fx.homeId ? teams[fx.homeId] : null;
   const A = fx.awayId ? teams[fx.awayId] : null;
+  const winnerId = fx.result
+    ? fx.result.winner ??
+      (fx.result.homeGoals > fx.result.awayGoals
+        ? fx.homeId
+        : fx.result.awayGoals > fx.result.homeGoals
+          ? fx.awayId
+          : null)
+    : null;
+  const decidedOnPens = Boolean(fx.result) && fx.result.homeGoals === fx.result.awayGoals;
 
   return (
     <div className="card p-4 flex flex-col gap-3">
@@ -49,12 +58,12 @@ export default function MatchCard({ fx, teams }) {
           <TeamRow
             team={H}
             goals={fx.result ? fx.result.homeGoals : null}
-            dim={Boolean(fx.result) && fx.result.homeGoals < fx.result.awayGoals}
+            dim={Boolean(winnerId) && winnerId !== fx.homeId}
           />
           <TeamRow
             team={A}
             goals={fx.result ? fx.result.awayGoals : null}
-            dim={Boolean(fx.result) && fx.result.awayGoals < fx.result.homeGoals}
+            dim={Boolean(winnerId) && winnerId !== fx.awayId}
           />
 
           {!fx.result && isLocked(fx) && (
@@ -102,12 +111,13 @@ export default function MatchCard({ fx, teams }) {
 
           {fx.result && (
             <p className="text-sm opacity-80">
-              Advanced:{" "}
-              {teams[
-                fx.result.winner ??
-                  (fx.result.homeGoals > fx.result.awayGoals ? fx.homeId : fx.awayId)
-              ].name}
-              {fx.result.homeGoals === fx.result.awayGoals ? " (after ET/pens)" : ""}
+              Advanced: {teams[winnerId].name}
+              {decidedOnPens &&
+                (fx.result.pens
+                  ? ` ${fx.result.pens.home}-${fx.result.pens.away} on penalties`
+                  : fx.result.aet
+                    ? ` ${fx.result.aet.home}-${fx.result.aet.away} after extra time`
+                    : " (after ET/pens)")}
             </p>
           )}
         </>
